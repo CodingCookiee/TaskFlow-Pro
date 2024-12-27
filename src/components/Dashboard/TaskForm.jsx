@@ -4,24 +4,27 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
 export default function TaskForm() {
+  const { data: session } = useSession();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const router = useRouter();
-  const { data: session } = useSession();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!session) {
-      console.error('No session found');
+      console.error('User is not authenticated');
       return;
     }
+
     try {
-      await axios.post('/api/tasks/create', 
+      const response = await axios.post('/api/tasks/create', 
         { title, description },
         {
           headers: {
-            Authorization: `Bearer ${session.accessToken}`,
-          },
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.accessToken}`
+          }
         }
       );
       router.push('/dashboard');

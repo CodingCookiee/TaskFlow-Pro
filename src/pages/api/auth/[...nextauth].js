@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
+import jwt from 'jsonwebtoken';
 
 export default NextAuth({
   providers: [
@@ -30,7 +31,11 @@ export default NextAuth({
           throw new Error('Incorrect password');
         }
 
-        return user;
+        // Generate an access token
+        const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Include the access token in the user object
+        return { ...user, accessToken };
       },
     }),
   ],
@@ -46,12 +51,14 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.accessToken = user.accessToken; // Ensure accessToken is part of the user object
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.id = token.id;
+        session.accessToken = token.accessToken;
       }
       return session;
     },
