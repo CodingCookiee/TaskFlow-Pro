@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { Loader2 } from "lucide-react";
-import { Button, Input, Card, CardHeader, CardContent } from '@/components/ui';
+import { Button, Input, Card, CardHeader, CardContent, Textarea } from '@/components/ui';
 
 
 

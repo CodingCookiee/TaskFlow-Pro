@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import TaskList from '@/components/Dashboard/TaskList';
 import TaskForm from '@/components/Dashboard/TaskForm';
-import { TabsList, Button, Card, CardContent, Checkbox, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Tabs } from '@/components/ui';
+import { Tabs, TabsList, TabsTrigger, TabsContent, Button, Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, Checkbox, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui';
 
 
 export default function Dashboard() {

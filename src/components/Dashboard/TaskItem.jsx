@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Button, Input, Textarea, Card, CardContent } from '@/components/ui';
-
-
+import { Button, Input, Textarea, Card, CardContent, Checkbox } from '@/components/ui';
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui";
 
@@ -26,7 +24,7 @@ export default function TaskItem({ task, onDelete, onStatusChange }) {
         <div className="flex items-center space-x-4">
           <Checkbox
             checked={task.completed}
-            onCheckedChange={(checked) => onStatusChange(task.id, checked)}
+            onChange={(e) => onStatusChange(task.id, e.target.checked)}
             className="h-5 w-5"
           />
           <div className="flex flex-col">
@@ -43,9 +41,11 @@ export default function TaskItem({ task, onDelete, onStatusChange }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
+            <div>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={handleEdit}>
