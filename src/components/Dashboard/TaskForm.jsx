@@ -1,47 +1,38 @@
-import React, { useState } from 'react';
-import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-const TaskForm = ({ onTaskAdded }) => {
-  const { data: session } = useSession();
-  const [taskName, setTaskName] = useState('');
-  const [error, setError] = useState('');
+export default function TaskForm() {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!taskName) {
-      setError('Task name is required');
-      return;
-    }
-    setError('');
-
     try {
-      const response = await axios.post('/api/tasks/create', {
-        name: taskName,
-        userId: session.user.id,
-      });
-      onTaskAdded(response.data);
-      setTaskName('');
-    } catch (err) {
-      setError('Failed to add task');
+      await axios.post('/api/tasks/create', { title, description });
+      router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col mb-4">
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)}
-        placeholder="Add a new task"
-        className="p-2 border rounded"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Title"
+        required
       />
-      {error && <p className="text-red-500">{error}</p>}
-      <button type="submit" className="mt-2 p-2 bg-blue-500 text-white rounded">
-        Add Task
-      </button>
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Description"
+        required
+      />
+      <button type="submit">Create Task</button>
     </form>
   );
-};
-
-export default TaskForm;
+}
