@@ -8,6 +8,8 @@ export default async function handler(req, res) {
 
   const { email, password } = req.body;
 
+  console.log('Request payload:', { email, password });
+
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -23,6 +25,7 @@ export default async function handler(req, res) {
     });
     res.status(201).json(user);
   } catch (error) {
+    console.error('Error creating user:', error);
     if (error.code === 'P2002' && error.meta && error.meta.target.includes('email')) {
       res.status(400).json({ message: 'Email already exists' });
     } else {
