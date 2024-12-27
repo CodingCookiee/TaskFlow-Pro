@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import TaskList from '../components/Dashboard/TaskList';
 import TaskForm from '../components/Dashboard/TaskForm';
-// Correct the import path for api
 import { fetchTasks } from '../utils/api';
 
 const Dashboard = () => {
