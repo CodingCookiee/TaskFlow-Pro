@@ -1,12 +1,12 @@
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "../ui/dropdownMenu.jsx";
 import { LogOut, User, Plus, List, Menu } from 'lucide-react';
 
 export default function Header() {
