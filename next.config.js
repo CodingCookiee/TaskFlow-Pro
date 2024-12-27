@@ -18,8 +18,7 @@ const nextConfig = {
       aggregateTimeout: 300,
     }
     return config
-  },
-  swcMinify: true,
+  }
 };
 
 module.exports = nextConfig;
