@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/Card";
-import { FcGoogle } from 'react-icons/fc';
+import { Chrome } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function SignIn() {
@@ -76,12 +76,14 @@ export default function SignIn() {
               />
             </div>
             <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </Button>
+  type="button" 
+  variant="outline" 
+  className="w-full"
+  onClick={handleGoogleSignIn}
+>
+  <Chrome className="mr-2 h-4 w-4 text-blue-500" />
+  Google
+</Button>
           </form>
           
           <div className="relative my-4">
@@ -96,14 +98,14 @@ export default function SignIn() {
           </div>
 
           <Button 
-            type="button" 
-            variant="outline" 
-            className="w-full"
-            onClick={handleGoogleSignIn}
-          >
-            <FcGoogle className="mr-2 h-4 w-4" />
-            Google
-          </Button>
+  type="button" 
+  variant="outline" 
+  className="w-full"
+  onClick={handleGoogleSignIn}
+>
+  <Chrome className="mr-2 h-4 w-4 text-blue-500" />
+  Google
+</Button>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-gray-600">
