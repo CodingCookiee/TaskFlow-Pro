@@ -1,40 +1,58 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "../../../utils/prisma";
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { compare } from 'bcryptjs';
+import prisma from '../../../utils/prisma';
 
 export default NextAuth({
-  adapter: PrismaAdapter(prisma),
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "your-email@example.com" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        const { email, password } = credentials;
+
+        // Find user by email
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
-        if (user && user.password === credentials.password) {
-          return user;
+        if (!user) {
+          throw new Error('No user found with the email');
         }
-        return null;
+
+        // Check if the password matches
+        const isValid = await compare(password, user.password);
+
+        if (!isValid) {
+          throw new Error('Incorrect password');
+        }
+
+        return user;
       },
     }),
   ],
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+    error: '/auth/error', // Error code passed in query string as ?error=
+  },
   session: {
     jwt: true,
   },
   callbacks: {
-    async session({ session, token, user }) {
-      session.user.id = user.id;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.id = token.id;
+      }
       return session;
     },
   },

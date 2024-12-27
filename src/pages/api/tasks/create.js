@@ -9,15 +9,20 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { title, description } = req.body;
-    const task = await prisma.task.create({
-      data: {
-        title,
-        description,
-        userId: session.user.id,
-      },
-    });
-    res.status(201).json(task);
+    try {
+      const { title, description } = req.body;
+      const task = await prisma.task.create({
+        data: {
+          title,
+          description,
+          userId: session.user.id,
+        },
+      });
+      res.status(201).json(task);
+    } catch (error) {
+      console.error('Error creating task:', error);
+      res.status(500).json({ error: 'Failed to create task', details: error.message });
+    }
   } else {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);

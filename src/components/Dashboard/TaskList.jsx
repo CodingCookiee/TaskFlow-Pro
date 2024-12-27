@@ -1,24 +1,41 @@
+
 import React, { useEffect, useState } from 'react';
 import TaskItem from './TaskItem';
+import { useSession } from 'next-auth/react';
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
+    if (!session) {
+      return;
+    }
     const fetchTasks = async () => {
-      const response = await fetch('/api/tasks');
-      const data = await response.json();
-      setTasks(data);
+      try {
+        const response = await fetch('/api/tasks');
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
     };
 
     fetchTasks();
-  }, []);
+  }, [session]);
 
   const handleDelete = async (id) => {
-    await fetch(`/api/tasks/${id}`, {
-      method: 'DELETE',
-    });
-    setTasks(tasks.filter(task => task.id !== id));
+    if (!session) {
+      return;
+    }
+    try {
+      await fetch(`/api/tasks/${id}`, {
+        method: 'DELETE',
+      });
+      setTasks(tasks.filter(task => task.id !== id));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
 
   return (

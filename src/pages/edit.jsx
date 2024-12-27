@@ -34,6 +34,10 @@ const EditTask = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const session = await getSession();
+    if (!session) {
+      return;
+    }
     await fetch(`/api/tasks/${id}`, {
       method: 'PUT',
       headers: {
