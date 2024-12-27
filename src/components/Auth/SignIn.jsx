@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
+import { Card, CardHeader, CardContent, CardFooter } from "../ui/Card";
 import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-hot-toast';
 

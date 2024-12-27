@@ -1,34 +1,34 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/Button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
 export default function Home() {
   const { data: session } = useSession();
 
   const features = [
-    "Create and manage tasks efficiently",
+    "Lightning-fast task management",
     "Real-time updates and notifications",
-    "Collaborative task management",
+    "Collaborative workspace",
     "Mobile-responsive design",
-    "Secure authentication"
+    "Enterprise-grade security"
   ];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
       <div className="max-w-3xl px-4">
-        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Organize Your Tasks with Ease
+        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+          TaskFlow Pro
         </h1>
         
         <p className="text-xl text-gray-600 mb-8">
-          A powerful task management solution for individuals and teams
+          Elevate your productivity with our powerful task management solution
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {features.map((feature, index) => (
             <div key={index} className="flex items-center space-x-2">
-              <CheckCircle className="text-green-500" />
+              <CheckCircle className="text-indigo-500" />
               <span>{feature}</span>
             </div>
           ))}
@@ -37,7 +37,7 @@ export default function Home() {
         {!session ? (
           <div className="space-x-4">
             <Link href="/auth/signin">
-              <Button size="lg">
+              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700">
                 Get Started
                 <ArrowRight className="ml-2" />
               </Button>
@@ -50,7 +50,7 @@ export default function Home() {
           </div>
         ) : (
           <Link href="/dashboard">
-            <Button size="lg">
+            <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700">
               Go to Dashboard
               <ArrowRight className="ml-2" />
             </Button>

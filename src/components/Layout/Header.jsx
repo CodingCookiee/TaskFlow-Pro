@@ -6,18 +6,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdownMenu.jsx";
-import { LogOut, User, Plus, List, Menu } from 'lucide-react';
+} from "../ui/dropdownMenu";
+import { LogOut, User, Plus, List, Menu, CheckCircle } from 'lucide-react';
 
 export default function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="font-bold text-xl bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            TaskMaster
+          <CheckCircle className="h-6 w-6 text-indigo-600" />
+          <div className="font-bold text-2xl bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            TaskFlow Pro
           </div>
         </Link>
 
@@ -25,13 +26,13 @@ export default function Header() {
           {session ? (
             <>
               <Link href="/dashboard">
-                <Button variant="ghost">
+                <Button variant="ghost" className="flex items-center">
                   <List className="mr-2 h-4 w-4" />
-                  Tasks
+                  My Tasks
                 </Button>
               </Link>
-              <Link href="/dashboard">
-                <Button variant="ghost">
+              <Link href="/dashboard?tab=new">
+                <Button variant="ghost" className="flex items-center">
                   <Plus className="mr-2 h-4 w-4" />
                   New Task
                 </Button>
@@ -43,11 +44,14 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem className="flex-col items-start">
+                  <DropdownMenuItem className="flex-col items-start p-2">
                     <div className="font-medium">{session.user.email}</div>
                     <div className="text-xs text-gray-500">Manage your account</div>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => signOut()} className="text-red-600">
+                  <DropdownMenuItem 
+                    onClick={() => signOut({ callbackUrl: '/' })} 
+                    className="text-red-600 p-2"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>
@@ -60,7 +64,9 @@ export default function Header() {
                 <Button variant="ghost">Sign In</Button>
               </Link>
               <Link href="/auth/signup">
-                <Button>Get Started</Button>
+                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  Get Started
+                </Button>
               </Link>
             </>
           )}
@@ -77,30 +83,33 @@ export default function Header() {
             <DropdownMenuContent align="end" className="w-56">
               {session ? (
                 <>
-                  <DropdownMenuItem>
-                    <Link href="/dashboard" className="flex items-center">
+                  <DropdownMenuItem className="p-2">
+                    <Link href="/dashboard" className="flex items-center w-full">
                       <List className="mr-2 h-4 w-4" />
-                      Tasks
+                      My Tasks
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/dashboard" className="flex items-center">
+                  <DropdownMenuItem className="p-2">
+                    <Link href="/dashboard?tab=new" className="flex items-center w-full">
                       <Plus className="mr-2 h-4 w-4" />
                       New Task
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => signOut()} className="text-red-600">
+                  <DropdownMenuItem 
+                    onClick={() => signOut({ callbackUrl: '/' })} 
+                    className="text-red-600 p-2"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>
                 </>
               ) : (
                 <>
-                  <DropdownMenuItem>
-                    <Link href="/auth/signin">Sign In</Link>
+                  <DropdownMenuItem className="p-2">
+                    <Link href="/auth/signin" className="w-full">Sign In</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/auth/signup">Sign Up</Link>
+                  <DropdownMenuItem className="p-2">
+                    <Link href="/auth/signup" className="w-full">Sign Up</Link>
                   </DropdownMenuItem>
                 </>
               )}

@@ -2,8 +2,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import TaskList from '../components/Dashboard/TaskList';
 import TaskForm from '../components/Dashboard/TaskForm';
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardHeader, CardContent } from "../components/ui/Card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs";
 
 export default function Dashboard() {
   const { data: session, status } = useSession({
