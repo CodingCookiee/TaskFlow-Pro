@@ -16,29 +16,31 @@ export default function SignIn() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
-      });
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-      if (result.error) {
-        toast.error('Invalid credentials');
-      } else {
-        toast.success('Successfully signed in!');
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      toast.error('An error occurred');
-    } finally {
-      setIsLoading(false);
+  try {
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (result.error) {
+      toast.error('Invalid credentials');
+    } else {
+      toast.success('Successfully signed in!');
+      router.replace('/dashboard'); // Using replace instead of push
     }
-  };
+  } catch (error) {
+    toast.error('An error occurred');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl: '/dashboard' });
@@ -76,14 +78,12 @@ export default function SignIn() {
               />
             </div>
             <Button 
-  type="button" 
-  variant="outline" 
-  className="w-full"
-  onClick={handleGoogleSignIn}
->
-  <Chrome className="mr-2 h-4 w-4 text-blue-500" />
-  Google
-</Button>
+              type="submit" 
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Signing in...' : 'Sign In'}
+            </Button>
           </form>
           
           <div className="relative my-4">
@@ -98,14 +98,14 @@ export default function SignIn() {
           </div>
 
           <Button 
-  type="button" 
-  variant="outline" 
-  className="w-full"
-  onClick={handleGoogleSignIn}
->
-  <Chrome className="mr-2 h-4 w-4 text-blue-500" />
-  Google
-</Button>
+            type="button" 
+            variant="outline" 
+            className="w-full"
+            onClick={handleGoogleSignIn}
+          >
+            <Chrome className="mr-2 h-4 w-4 text-blue-500" />
+            Sign in with Google
+          </Button>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-gray-600">

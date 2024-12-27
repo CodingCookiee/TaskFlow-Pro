@@ -9,7 +9,7 @@ export default function Dashboard() {
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
-      router.push('/auth/signin');
+      router.replace('/auth/signin');
     },
   });
   const router = useRouter();
@@ -17,6 +17,11 @@ export default function Dashboard() {
   if (status === "loading") {
     return <div>Loading...</div>;
   }
+
+  if (!session) {
+    return null;
+  }
+
 
   return (
     <div className="max-w-4xl mx-auto">

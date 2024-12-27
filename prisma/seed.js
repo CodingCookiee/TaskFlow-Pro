@@ -5,42 +5,69 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
-    // Create demo user
+    // Create demo users
     const hashedPassword = await hash('Demo@123', 12);
+    
     const demoUser = await prisma.user.create({
       data: {
         email: 'demo@example.com',
         name: 'Demo User',
         password: hashedPassword,
+        image: 'https://ui-avatars.com/api/?name=Demo+User',
       },
     });
 
-    // Create sample tasks
-    const tasks = [
+    const adminUser = await prisma.user.create({
+      data: {
+        email: 'admin@taskflow.com',
+        name: 'Admin User',
+        password: hashedPassword,
+        image: 'https://ui-avatars.com/api/?name=Admin+User',
+      },
+    });
+
+    // Create sample tasks for demo user
+    const demoTasks = [
       {
         title: 'Complete Project Documentation',
-        description: 'Write comprehensive documentation for the project',
-        priority: 'HIGH',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        description: 'Write comprehensive documentation for the TaskFlow project',
+        completed: false,
         userId: demoUser.id,
       },
       {
         title: 'Review Pull Requests',
         description: 'Review and merge pending pull requests',
-        priority: 'MEDIUM',
+        completed: true,
         userId: demoUser.id,
       },
       {
         title: 'Update Dependencies',
         description: 'Update project dependencies to latest versions',
-        priority: 'LOW',
+        completed: false,
         userId: demoUser.id,
       },
     ];
 
-    for (const task of tasks) {
-      await prisma.task.create({ data: task });
-    }
+    // Create sample tasks for admin user
+    const adminTasks = [
+      {
+        title: 'System Maintenance',
+        description: 'Perform routine system maintenance',
+        completed: false,
+        userId: adminUser.id,
+      },
+      {
+        title: 'User Analytics Review',
+        description: 'Review user engagement metrics',
+        completed: false,
+        userId: adminUser.id,
+      },
+    ];
+
+    // Bulk create tasks
+    await prisma.task.createMany({
+      data: [...demoTasks, ...adminTasks],
+    });
 
     console.log('🌱 Seed data created successfully');
   } catch (error) {

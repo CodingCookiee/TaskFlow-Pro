@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
 import jwt from 'jsonwebtoken';
@@ -30,28 +30,45 @@ export const authOptions = {
           throw new Error('No user found with this email');
         }
 
-        const isPasswordValid = await compare(credentials.password, user.password);
-
-        if (!isPasswordValid) {
-          throw new Error('Invalid password');
+        if (user.password) {
+          const isPasswordValid = await compare(credentials.password, user.password);
+          if (!isPasswordValid) {
+            throw new Error('Invalid password');
+          }
         }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name
-        };
+        return user;
       }
     })
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account.provider === 'google') {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: profile.email }
+        });
+
+        if (!existingUser) {
+          const newUser = await prisma.user.create({
+            data: {
+              email: profile.email,
+              name: profile.name,
+              image: profile.picture
+            }
+          });
+          return true;
+        }
+        return true;
+      }
+      return true;
+    },
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.accessToken = jwt.sign(
-          { userId: user.id },
-          process.env.JWT_SECRET,
-          { expiresIn: '1d' }
+          { userId: user.id, email: user.email },
+          process.env.JWT_SECRET || 'fallback-secret',
+          { expiresIn: '24h' }
         );
       }
       return token;
@@ -62,34 +79,15 @@ export const authOptions = {
         session.accessToken = token.accessToken;
       }
       return session;
-    },
-    async signIn({ user, account, profile }) {
-      if (account.provider === 'google') {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: profile.email }
-        });
-
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              email: profile.email,
-              name: profile.name,
-              image: profile.image
-            }
-          });
-        }
-      }
-      return true;
     }
   },
   pages: {
     signIn: '/auth/signin',
-    signOut: '/auth/signout',
     error: '/auth/error'
   },
   session: {
     strategy: 'jwt',
-    maxAge: 24 * 60 * 60 // 24 hours
+    maxAge: 24 * 60 * 60
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development'

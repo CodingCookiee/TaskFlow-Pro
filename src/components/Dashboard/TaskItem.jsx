@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/Button";
+import { Card, CardContent } from "../ui/Card";
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdownMenu";
 
 export default function TaskItem({ task, onDelete, onStatusChange }) {
   const router = useRouter();

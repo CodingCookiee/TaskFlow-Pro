@@ -1,12 +1,13 @@
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/Card";
-import { Chrome } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-hot-toast';
+import { Chrome } from 'lucide-react';
 
 export default function SignUp() {
   const router = useRouter();
@@ -17,47 +18,38 @@ export default function SignUp() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
+  try {
+    const response = await fetch('/api/routes/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password
+      })
+    });
 
-    try {
-      const response = await fetch('/api/routes/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+    if (response.ok) {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
       });
 
-      if (response.ok) {
-        toast.success('Account created successfully!');
-        const result = await signIn('credentials', {
-          redirect: false,
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (!result.error) {
-          router.push('/dashboard');
-        }
-      } else {
-        const data = await response.json();
-        toast.error(data.message || 'Failed to create account');
+      if (!result.error) {
+        router.replace('/dashboard'); // Using replace instead of push
       }
-    } catch (error) {
-      toast.error('An error occurred');
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error) {
+    toast.error('An error occurred');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
