@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button, Input, Textarea, Card, CardContent } from '@/components/ui';
 
+
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdownMenu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui";
 
 export default function TaskItem({ task, onDelete, onStatusChange }) {
   const router = useRouter();
