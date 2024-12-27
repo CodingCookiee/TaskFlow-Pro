@@ -12,7 +12,7 @@ const SignUp = () => {
     e.preventDefault();
     setError('');
 
-    const res = await fetch('/api/auth/signup', {
+    const res = await fetch('/api/routes/signup', {
       method: 'POST', // Ensure the method is POST
       headers: {
         'Content-Type': 'application/json',

@@ -8,15 +8,12 @@ export default async function handler(req, res) {
 
   const { email, password } = req.body;
 
-  console.log('Request payload:', { email, password });
-
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
-  const hashedPassword = await hash(password, 10);
-
   try {
+    const hashedPassword = await hash(password, 10);
     const user = await prisma.user.create({
       data: {
         email,
@@ -25,11 +22,6 @@ export default async function handler(req, res) {
     });
     res.status(201).json(user);
   } catch (error) {
-    console.error('Error creating user:', error);
-    if (error.code === 'P2002' && error.meta && error.meta.target.includes('email')) {
-      res.status(400).json({ message: 'Email already exists' });
-    } else {
-      res.status(500).json({ message: 'User creation failed', error: error.message });
-    }
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
