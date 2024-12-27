@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { Card, CardHeader, CardContent, CardFooter } from "../ui/Card";
+import { Button, Input, Card, CardHeader, CardContent, CardFooter } from '@/components/ui';
+
 import { Chrome } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 

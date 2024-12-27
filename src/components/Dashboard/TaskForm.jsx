@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button, Input, Textarea, Card, CardContent } from '@/components/ui';
 import { toast } from 'react-hot-toast';
 
 export default function TaskForm() {

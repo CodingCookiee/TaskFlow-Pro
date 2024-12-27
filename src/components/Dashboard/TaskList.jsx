@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import TaskItem from './TaskItem';
-import { Card, CardContent } from "../ui/Card";
+import { Card, CardContent } from '@/components/ui';
+
 import { Loader2 } from "lucide-react";
 import { toast } from 'react-hot-toast';
 

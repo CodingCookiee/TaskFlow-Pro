@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { FcGoogle } from 'react-icons/fc';
+import { Button, Input, Card, CardHeader, CardContent } from '@/components/ui';
+
 
 export default function AuthForm({ mode = 'signin' }) {
   const [formData, setFormData] = useState({

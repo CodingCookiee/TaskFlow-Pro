@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import SignUp from '../../components/Auth/SignUp';
+import SignUp from '@/components/Auth/SignUp';
+
 
 export default function SignUpPage() {
   const { data: session } = useSession();

@@ -1,9 +1,9 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import TaskList from '../components/Dashboard/TaskList';
-import TaskForm from '../components/Dashboard/TaskForm';
-import { Card, CardHeader, CardContent } from "../components/ui/Card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs";
+import TaskList from '@/components/Dashboard/TaskList';
+import TaskForm from '@/components/Dashboard/TaskForm';
+import { Button, Card, CardContent, Checkbox, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui';
+
 
 export default function Dashboard() {
   const { data: session, status } = useSession({

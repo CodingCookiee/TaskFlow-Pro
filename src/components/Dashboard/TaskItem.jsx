@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Checkbox } from "../ui/checkbox";
-import { Button } from "../ui/Button";
-import { Card, CardContent } from "../ui/Card";
+import { Button, Input, Textarea, Card, CardContent } from '@/components/ui';
+
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdownMenu";
 

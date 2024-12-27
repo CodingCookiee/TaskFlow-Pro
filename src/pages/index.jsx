@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Button } from "../components/ui/Button";
+import { Button } from "@/components/ui";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
 export default function Home() {

@@ -1,33 +1,33 @@
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import SignIn from '../../components/Auth/SignIn';
+import SignIn from '@/components/Auth/SignIn';
 
 export default function SignInPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
-      router.push('/dashboard');
+    if (status === 'authenticated') {
+      router.replace('/dashboard');
     }
-  }, [session, router]);
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (status === 'authenticated') {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to continue managing your tasks</p>
-        </div>
-        <SignIn />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <SignIn />
     </div>
   );
-}
-
-export async function getServerSideProps(context) {
-  return {
-    props: {}
-  };
 }
