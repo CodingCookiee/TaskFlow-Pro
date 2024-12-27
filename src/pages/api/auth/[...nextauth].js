@@ -1,64 +1,98 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import { compare } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
 import jwt from 'jsonwebtoken';
 
-export default NextAuth({
+export const authOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        const { email, password } = credentials;
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email and password required');
+        }
 
-        // Find user by email
         const user = await prisma.user.findUnique({
-          where: { email },
+          where: { email: credentials.email }
         });
 
         if (!user) {
-          throw new Error('No user found with the email');
+          throw new Error('No user found with this email');
         }
 
-        // Check if the password matches
-        const isValid = await compare(password, user.password);
+        const isPasswordValid = await compare(credentials.password, user.password);
 
-        if (!isValid) {
-          throw new Error('Incorrect password');
+        if (!isPasswordValid) {
+          throw new Error('Invalid password');
         }
 
-        // Generate an access token
-        const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        // Include the access token in the user object
-        return { ...user, accessToken };
-      },
-    }),
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name
+        };
+      }
+    })
   ],
-  pages: {
-    signIn: '/auth/signin',
-    signOut: '/auth/signout',
-    error: '/auth/error', // Error code passed in query string as ?error=
-  },
-  session: {
-    jwt: true,
-  },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-        token.accessToken = user.accessToken; // Ensure accessToken is part of the user object
+        token.accessToken = jwt.sign(
+          { userId: user.id },
+          process.env.JWT_SECRET,
+          { expiresIn: '1d' }
+        );
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.accessToken = token.accessToken; // Ensure accessToken is part of the session object
+      if (token) {
+        session.user.id = token.id;
+        session.accessToken = token.accessToken;
+      }
       return session;
     },
+    async signIn({ user, account, profile }) {
+      if (account.provider === 'google') {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: profile.email }
+        });
+
+        if (!existingUser) {
+          await prisma.user.create({
+            data: {
+              email: profile.email,
+              name: profile.name,
+              image: profile.image
+            }
+          });
+        }
+      }
+      return true;
+    }
   },
-});
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+    error: '/auth/error'
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60 // 24 hours
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development'
+};
+
+export default NextAuth(authOptions);

@@ -1,72 +1,107 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getSession } from 'next-auth/react';
-import prisma from '../utils/prisma';
+import { useSession } from 'next-auth/react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { toast } from 'react-hot-toast';
+import { Loader2 } from "lucide-react";
 
-const EditTask = () => {
+export default function EditTask() {
   const router = useRouter();
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push('/auth/signin');
+    },
+  });
+
+  const [task, setTask] = useState({ title: '', description: '' });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const { id } = router.query;
-  const [task, setTask] = useState({ name: '' });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTask = async () => {
-      const session = await getSession();
-      if (!session) {
-        router.push('/');
-        return;
-      }
+    if (id && session) {
+      fetchTask();
+    }
+  }, [id, session]);
 
+  const fetchTask = async () => {
+    try {
       const response = await fetch(`/api/tasks/${id}`);
       const data = await response.json();
       setTask(data);
-      setLoading(false);
-    };
-
-    if (id) {
-      fetchTask();
+    } catch (error) {
+      toast.error('Failed to fetch task');
+    } finally {
+      setIsLoading(false);
     }
-  }, [id, router]);
-
-  const handleChange = (e) => {
-    setTask({ ...task, name: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const session = await getSession();
-    if (!session) {
-      return;
+    setIsSaving(true);
+
+    try {
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(task),
+      });
+
+      if (response.ok) {
+        toast.success('Task updated successfully');
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      toast.error('Failed to update task');
+    } finally {
+      setIsSaving(false);
     }
-    await fetch(`/api/tasks/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(task),
-    });
-    router.push('/dashboard');
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold">Edit Task</h1>
-      <form onSubmit={handleSubmit} className="mt-4">
-        <input
-          type="text"
-          value={task.name}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required
-        />
-        <button type="submit" className="mt-2 bg-blue-500 text-white p-2">
-          Update Task
-        </button>
-      </form>
+    <div className="max-w-2xl mx-auto">
+      <Card>
+        <CardHeader>
+          <h1 className="text-2xl font-bold">Edit Task</h1>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              value={task.title}
+              onChange={(e) => setTask({ ...task, title: e.target.value })}
+              placeholder="Task Title"
+              required
+            />
+            <Textarea
+              value={task.description}
+              onChange={(e) => setTask({ ...task, description: e.target.value })}
+              placeholder="Task Description"
+              className="min-h-[100px]"
+            />
+            <div className="flex space-x-4">
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => router.back()}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default EditTask;
+}

@@ -1,46 +1,51 @@
-import { useEffect, useState } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import TaskList from '../components/Dashboard/TaskList';
 import TaskForm from '../components/Dashboard/TaskForm';
-import { fetchTasks } from '../utils/api';
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const Dashboard = () => {
-  const { data: session, status } = useSession();
-  const [tasks, setTasks] = useState([]);
+export default function Dashboard() {
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push('/auth/signin');
+    },
+  });
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      const loadTasks = async () => {
-        const fetchedTasks = await fetchTasks();
-        setTasks(fetchedTasks);
-      };
-      loadTasks();
-    }
-  }, [status]);
-
-  if (status === 'loading') {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
 
-  if (status === 'unauthenticated') {
-    return <div>Please sign in to access the dashboard.</div>;
-  }
-
-  const handleLogout = async () => {
-    await signOut({ redirect: false });
-    router.push('/auth/signin');
-  };
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Welcome, {session.user.name}</h1>
-      <button onClick={handleLogout} className="mb-4 bg-red-500 text-white p-2 rounded">Logout</button>
-      <TaskForm setTasks={setTasks} />
-      <TaskList tasks={tasks} setTasks={setTasks} />
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Welcome, {session?.user?.name || 'User'}!</h1>
+        <p className="text-gray-600">Manage your tasks efficiently</p>
+      </div>
+
+      <Tabs defaultValue="tasks" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="tasks">My Tasks</TabsTrigger>
+          <TabsTrigger value="new">New Task</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="tasks">
+          <TaskList />
+        </TabsContent>
+
+        <TabsContent value="new">
+          <Card>
+            <CardHeader>
+              <h2 className="text-2xl font-semibold">Create New Task</h2>
+            </CardHeader>
+            <CardContent>
+              <TaskForm />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
-
-export default Dashboard;
+}

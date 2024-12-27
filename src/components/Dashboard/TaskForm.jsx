@@ -1,54 +1,57 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from 'react-hot-toast';
 
 export default function TaskForm() {
-  const { data: session } = useSession();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [task, setTask] = useState({ title: '', description: '' });
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!session) {
-      console.error('User is not authenticated');
-      return;
-    }
-
     try {
-      const response = await axios.post('/api/tasks/create', 
-        { title, description },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.accessToken}`
-          }
-        }
-      );
-      router.push('/dashboard');
+      const response = await fetch('/api/tasks/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(task)
+      });
+      
+      if (response.ok) {
+        toast.success('Task created successfully');
+        setTask({ title: '', description: '' });
+        router.push('/dashboard');
+      }
     } catch (error) {
-      console.error('Error creating task:', error);
+      toast.error('Failed to create task');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-        required
-      />
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Description"
-        required
-      />
-      <button type="submit">Create Task</button>
-    </form>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            placeholder="Task Title"
+            value={task.title}
+            onChange={(e) => setTask({...task, title: e.target.value})}
+            className="w-full"
+            required
+          />
+          <Textarea
+            placeholder="Task Description"
+            value={task.description}
+            onChange={(e) => setTask({...task, description: e.target.value})}
+            className="w-full min-h-[100px]"
+            required
+          />
+          <Button type="submit" className="w-full">
+            Create Task
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,27 +1,52 @@
 const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcryptjs');
+const { hash } = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const hashedPassword = await bcrypt.hash('password123', 10);
+  try {
+    // Create demo user
+    const hashedPassword = await hash('Demo@123', 12);
+    const demoUser = await prisma.user.create({
+      data: {
+        email: 'demo@example.com',
+        name: 'Demo User',
+        password: hashedPassword,
+      },
+    });
 
-  const user = await prisma.user.create({
-    data: {
-      email: 'uniqueuser@example.com',
-      password: hashedPassword,
-    },
-  });
+    // Create sample tasks
+    const tasks = [
+      {
+        title: 'Complete Project Documentation',
+        description: 'Write comprehensive documentation for the project',
+        priority: 'HIGH',
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        userId: demoUser.id,
+      },
+      {
+        title: 'Review Pull Requests',
+        description: 'Review and merge pending pull requests',
+        priority: 'MEDIUM',
+        userId: demoUser.id,
+      },
+      {
+        title: 'Update Dependencies',
+        description: 'Update project dependencies to latest versions',
+        priority: 'LOW',
+        userId: demoUser.id,
+      },
+    ];
 
-  await prisma.task.createMany({
-    data: [
-      { name: 'Task 1', userId: user.id },
-      { name: 'Task 2', userId: user.id },
-      { name: 'Task 3', userId: user.id },
-    ],
-  });
+    for (const task of tasks) {
+      await prisma.task.create({ data: task });
+    }
 
-  console.log('Database has been seeded. 🌱');
+    console.log('🌱 Seed data created successfully');
+  } catch (error) {
+    console.error('Error seeding database:', error);
+    process.exit(1);
+  }
 }
 
 main()

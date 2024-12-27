@@ -1,27 +1,38 @@
-import { getSession } from 'next-auth/react';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 import prisma from '../../../utils/prisma';
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    try {
-      const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
 
-      if (!session) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
+  if (!session) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
 
+  switch (req.method) {
+    case 'GET':
       const tasks = await prisma.task.findMany({
         where: {
-          userId: session.user.id,
+          userId: session.user.id
         },
+        orderBy: {
+          createdAt: 'desc'
+        }
       });
-      res.status(200).json(tasks);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      res.status(500).json({ error: 'Failed to fetch tasks', details: error.message });
-    }
-  } else {
-    res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+      return res.json(tasks);
+
+    case 'POST':
+      const newTask = await prisma.task.create({
+        data: {
+          title: req.body.title,
+          description: req.body.description,
+          userId: session.user.id
+        }
+      });
+      return res.status(201).json(newTask);
+
+    default:
+      res.setHeader('Allow', ['GET', 'POST']);
+      return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

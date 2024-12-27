@@ -6,36 +6,53 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+    return res.status(400).json({ message: 'Missing required fields' });
   }
 
   try {
-    // Check if the user already exists
+    // Check for existing user
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email }
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Email already registered' });
     }
 
-    // Hash the password
-    const hashedPassword = await hash(password, 10);
+    // Password validation
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message: 'Password must be at least 8 characters and contain letters and numbers'
+      });
+    }
 
-    // Create the new user
+    // Hash password and create user
+    const hashedPassword = await hash(password, 12);
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
+        name: name || email.split('@')[0],
       },
     });
 
-    res.status(201).json(user);
+    // Remove password from response
+    const { password: _, ...userWithoutPassword } = user;
+
+    return res.status(201).json({
+      message: 'User created successfully',
+      user: userWithoutPassword
+    });
+
   } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    console.error('Signup error:', error);
+    return res.status(500).json({
+      message: 'Error creating user',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
