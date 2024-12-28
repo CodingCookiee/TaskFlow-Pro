@@ -13,7 +13,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-black-300/10 bg-light-primary/80 dark:bg-dark-primary/80 backdrop-blur-lg">
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
         <Link href="/" className="flex items-center space-x-2 group">
-          <div className="font-bold text-3xl bg-gradient-to-r from-black-100 to-black-300 dark:from-white-700 dark:to-white group-hover:from-violet-300 group-hover:to-violet-300 bg-clip-text text-transparent transition-all duration-300">
+        <div className="font-bold text-3xl bg-gradient-to-r from-black-100 to-black-300 dark:from-white-700 dark:to-white group-hover:to-violet-300 bg-clip-text text-transparent transition-all duration-300">
             TaskFlow Pro
           </div>
         </Link>
