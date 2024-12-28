@@ -5,3 +5,4 @@ export * from './Input';
 export * from './Tabs';
 export * from './Textarea';
 export * from './DropdownMenu';
+export * from './Dialog';
