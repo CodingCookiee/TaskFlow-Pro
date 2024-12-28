@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black-300/10 bg-light-primary/80 dark:bg-dark-primary/80 backdrop-blur-lg">
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
-        <Link href="/" className="flex items-center space-x-2 group">
+        <Link href="/" className="flex items-center space-x-2 group" prefetch>
           <div className="font-bold text-3xl bg-gradient-to-r from-black-100 to-black-300 dark:from-white-700 dark:to-white group-hover:to-violet-300 bg-clip-text text-transparent transition-all duration-300">
             TaskFlow Pro
           </div>
@@ -29,10 +29,10 @@ export default function Header() {
                   <img 
                     src={session.user.image} 
                     alt="Profile" 
-                    className="h-8 w-8 rounded-full"
+                    className="  h-8 w-8 rounded-full"
                   />
                 ) : (
-                  <User className="h-5 w-5 text-black-300 dark:text-white-700" />
+                  <User className=" ml-1 h-8 w-8 text-black-300 dark:text-white-700" />
                 )}
               </button>
 
@@ -46,12 +46,12 @@ export default function Header() {
                       {session.user.email}
                     </p>
                   </div>
-                  <Link href="/dashboard" onClick={() => setDropdownOpen(false)}>
+                  <Link href="/dashboard" onClick={() => setDropdownOpen(false)} prefetch>
                     <div className="px-4 py-2 text-black-300 dark:text-white-700 hover:bg-black-100/10 dark:hover:bg-white-500/10">
                       Dashboard
                     </div>
                   </Link>
-                  <Link href="/account/settings" onClick={() => setDropdownOpen(false)}>
+                  <Link href="/account/settings" onClick={() => setDropdownOpen(false)} prefetch>
                     <div className="px-4 py-2 text-black-300 dark:text-white-700 hover:bg-black-100/10 dark:hover:bg-white-500/10">
                       <Settings className="inline-block mr-2 h-4 w-4" />
                       Account Settings
@@ -72,14 +72,14 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link href="/auth/signin">
+              <Link href="/auth/signin" prefetch>
                 <Button variant="ghost" 
                   className="text-black-300 dark:text-white-800 hover:bg-black-100/10 dark:hover:bg-white-500/10 
                   transition-all duration-300 rounded-xl px-6">
                   Sign In
                 </Button>
               </Link>
-              <Link href="/auth/signup">
+              <Link href="/auth/signup" prefetch>
                 <Button className="bg-black-200 hover:bg-black-300 dark:bg-white text-white dark:text-black-200 
                   dark:hover:bg-white-800 transition-all duration-300 rounded-xl px-6">
                   Get Started
@@ -111,12 +111,12 @@ export default function Header() {
                       {session.user.email}
                     </p>
                   </div>
-                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} prefetch>
                     <div className="px-4 py-2 text-black-300 dark:text-white-700 hover:bg-black-100/10 dark:hover:bg-white-500/10">
                       Dashboard
                     </div>
                   </Link>
-                  <Link href="/account/settings" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/account/settings" onClick={() => setMobileMenuOpen(false)} prefetch>
                     <div className="px-4 py-2 text-black-300 dark:text-white-700 hover:bg-black-100/10 dark:hover:bg-white-500/10">
                       <Settings className="inline-block mr-2 h-4 w-4" />
                       Account Settings
@@ -135,12 +135,12 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)} prefetch>
                     <div className="px-4 py-2 text-black-300 dark:text-white-700 hover:bg-black-100/10 dark:hover:bg-white-500/10">
                       Sign In
                     </div>
                   </Link>
-                  <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)} prefetch>
                     <div className="px-4 py-2 text-black-300 dark:text-white-700 hover:bg-black-100/10 dark:hover:bg-white-500/10">
                       Sign Up
                     </div>

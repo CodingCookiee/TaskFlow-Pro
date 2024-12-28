@@ -81,14 +81,14 @@ export default function Home() {
         <motion.div variants={itemVariants} className="space-x-4">
           {!session ? (
             <>
-              <Link href="/auth/signin">
+              <Link href="/auth/signin" prefetch>
                 <Button variant="ghost" 
                   className="text-black-300 dark:text-white-800 hover:bg-black-100/10 dark:hover:bg-white-500/10 
                   transition-all duration-300 rounded-xl px-8 py-6 text-lg">
                   Explore More
                 </Button>
               </Link>
-              <Link href="/auth/signup">
+              <Link href="/auth/signup" prefetch>
                 <Button 
                   className="bg-black-200 hover:bg-black-300 dark:bg-white text-white dark:text-black-200 
                   dark:hover:bg-white-800 transition-all duration-300 rounded-xl px-8 py-6 text-lg">
@@ -98,7 +98,7 @@ export default function Home() {
               </Link>
             </>
           ) : (
-            <Link href="/dashboard">
+            <Link href="/dashboard" prefetch>
               <Button 
                 className="bg-black-200 hover:bg-black-300 dark:bg-white text-white dark:text-black-200 
                 dark:hover:bg-white-800 transition-all duration-300 rounded-xl px-8 py-6 text-lg">

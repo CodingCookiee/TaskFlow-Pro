@@ -12,7 +12,7 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
       <Head>
         <title>TaskFlow Pro</title>
         <meta name="description" content="Streamline your workflow with TaskFlow Pro" />
-        <link rel="icon" href="/tasks.png" type="image/png" />
+        <link rel="icon" href="/task.png" type="image/png" />
       </Head>
       <div className={`min-h-screen bg-gray-50 text-gray-900 font-sans`}>
         <Header />
