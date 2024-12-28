@@ -1,3 +1,6 @@
+// Move the signup.js file from /api/routes/ to /api/auth/
+// Update the file path to: src/pages/api/auth/signup.js
+
 import { hash } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
 import jwt from 'jsonwebtoken';
@@ -7,10 +10,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+  if (!email || !password || !name) {
+    return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
@@ -26,22 +29,22 @@ export default async function handler(req, res) {
     
     const user = await prisma.user.create({
       data: {
+        name,
         email,
         password: hashedPassword,
       },
     });
 
-    // Generate JWT token with proper payload
     const token = jwt.sign(
       { 
         userId: user.id, 
-        email: user.email 
+        email: user.email,
+        name: user.name
       },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Remove password from response
     const { password: _, ...userWithoutPassword } = user;
 
     return res.status(201).json({

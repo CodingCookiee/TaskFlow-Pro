@@ -2,33 +2,33 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import SignUp from '@/components/Auth/SignUp';
-
+import { motion } from 'framer-motion';
 
 export default function SignUpPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
-      router.push('/dashboard');
+    if (status === 'authenticated') {
+      router.replace('/dashboard');
     }
-  }, [session, router]);
+  }, [status, router]);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-600">Join us to start organizing your tasks</p>
-        </div>
-        <SignUp />
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-light-primary dark:bg-dark-primary">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-2 border-black-300 dark:border-white-700 border-t-transparent rounded-full"
+        />
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-export async function getServerSideProps(context) {
-  return {
-    props: {}
-  };
+  if (status === 'authenticated') {
+    return null;
+  }
+
+  return <SignUp />;
 }

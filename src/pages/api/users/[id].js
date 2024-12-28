@@ -18,10 +18,7 @@ export default async function handler(req, res) {
           id: true,
           email: true,
           name: true,
-          image: true,
-          tasks: {
-            orderBy: { createdAt: 'desc' }
-          }
+          image: true
         }
       });
       return res.status(200).json(user);
@@ -31,7 +28,8 @@ export default async function handler(req, res) {
         where: { id: Number(id) },
         data: {
           name: req.body.name,
-          image: req.body.image
+          image: req.body.image,
+          email: req.body.email
         },
         select: {
           id: true,
@@ -42,8 +40,14 @@ export default async function handler(req, res) {
       });
       return res.status(200).json(updatedUser);
 
+    case 'DELETE':
+      await prisma.user.delete({
+        where: { id: Number(id) }
+      });
+      return res.status(200).json({ message: 'Account deleted successfully' });
+
     default:
-      res.setHeader('Allow', ['GET', 'PUT']);
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
