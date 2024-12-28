@@ -32,14 +32,12 @@ export default {
         light: {
           primary: "#FFFFFF",
           secondary: "#F0F2FA",
-          text: "#1A1A1A",
-          accent: "#5724ff",
+          text: "#1A1A1A"
         },
         dark: {
           primary: "#0E0E10",
           secondary: "#1C1C21",
-          text: "#FFFFFF",
-          accent: "#edff66",
+          text: "#FFFFFF"
         },
       },
       backgroundImage: {

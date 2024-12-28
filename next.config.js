@@ -27,6 +27,10 @@ const nextConfig = {
         loader: 'babel-loader',
         options: {
           presets: ['next/babel'],
+          plugins: [
+            // Enable the new JSX transform
+            ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }],
+          ],
         },
       },
     });

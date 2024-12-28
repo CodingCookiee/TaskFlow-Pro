@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import "../styles/globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
@@ -15,7 +14,7 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
         <meta name="description" content="Streamline your workflow with TaskFlow Pro" />
         <link rel="icon" href="/tasks.png" type="image/png" />
       </Head>
-      <div className={`min-h-screen bg-gray-50 ${inter.className}`}>
+      <div className={`min-h-screen bg-gray-50 text-gray-900 font-sans`}>
         <Header />
         <main className="container mx-auto px-4 py-8">
           <Component {...pageProps} />
