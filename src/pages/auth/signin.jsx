@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import SignIn from '@/components/Auth/SignIn';
+import { motion } from 'framer-motion';
 
 export default function SignInPage() {
   const { data: session, status } = useSession();
@@ -15,8 +16,12 @@ export default function SignInPage() {
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex items-center justify-center min-h-screen bg-light-primary dark:bg-dark-primary">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-2 border-black-300 dark:border-white-700 border-t-transparent rounded-full"
+        />
       </div>
     );
   }
@@ -25,9 +30,5 @@ export default function SignInPage() {
     return null;
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-      <SignIn />
-    </div>
-  );
+  return <SignIn />;
 }
