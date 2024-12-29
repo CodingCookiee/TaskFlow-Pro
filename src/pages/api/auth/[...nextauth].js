@@ -22,14 +22,7 @@ export const authOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            password: true,
-            image: true
-          }
+          where: { email: credentials.email }
         });
 
         if (!user || !user.password) {
@@ -41,31 +34,34 @@ export const authOptions = {
           throw new Error('Invalid password');
         }
 
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        return user;
       }
     })
   ],
-
-callbacks: {
-  async jwt({ token, user }) {
-    if (user) {
-      token.id = user.id;
-      token.email = user.email;
+  callbacks: {
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.image = user.image;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.image = token.image;
+      }
+      return session;
     }
-    return token;
   },
-  async session({ session, token }) {
-    if (token) {
-      session.user.id = token.id;
-    }
-    return session;
-  }
-},
-
   pages: {
     signIn: '/auth/signin',
-    error: '/auth/error'
+    error: '/auth/error',
+    newUser: '/auth/signup'
   },
   session: {
     strategy: 'jwt',
