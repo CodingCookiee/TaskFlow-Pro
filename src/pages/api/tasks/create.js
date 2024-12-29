@@ -7,14 +7,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const session = await getServerSession(req, res, authOptions);
-  
-  if (!session) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
   try {
-    const { title, description } = req.body;
+    const session = await getServerSession(req, res, authOptions);
+    if (!session?.user?.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const { title, description, dueDate, priority } = req.body;
 
     if (!title) {
       return res.status(400).json({ message: 'Title is required' });
@@ -23,18 +22,22 @@ export default async function handler(req, res) {
     const task = await prisma.task.create({
       data: {
         title,
-        description,
-        userId: session.user.id,
-        completed: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        description: description || '',
+        dueDate: dueDate ? new Date(dueDate) : null,
+        priority: priority || 'medium',
+        userId: session.user.id
       }
     });
 
-    return res.status(201).json(task);
+    return res.status(201).json({
+      success: true,
+      data: task
+    });
+
   } catch (error) {
     return res.status(500).json({ 
-      message: 'Error creating task',
+      success: false,
+      message: 'Failed to create task',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

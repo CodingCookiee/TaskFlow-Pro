@@ -2,18 +2,25 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import TaskItem from './TaskItem';
 import { Card, CardContent } from '@/components/ui';
-
-import { Loader2 } from "lucide-react";
+import { Loader2, Search, Filter } from "lucide-react";
+import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState('all'); // all, active, completed
   const { data: session } = useSession();
 
   useEffect(() => {
     fetchTasks();
   }, [session]);
+
+  useEffect(() => {
+    filterTasks();
+  }, [tasks, searchQuery, filter]);
 
   const fetchTasks = async () => {
     try {
@@ -25,6 +32,32 @@ export default function TaskList() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const filterTasks = () => {
+    let result = [...tasks];
+
+    // Apply search filter
+    if (searchQuery) {
+      result = result.filter(task => 
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply status filter
+    switch (filter) {
+      case 'active':
+        result = result.filter(task => !task.completed);
+        break;
+      case 'completed':
+        result = result.filter(task => task.completed);
+        break;
+      default:
+        break;
+    }
+
+    setFilteredTasks(result);
   };
 
   const handleDelete = async (taskId) => {
@@ -64,21 +97,59 @@ export default function TaskList() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-48">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-2 border-violet-300 border-t-transparent rounded-full"
+        />
       </div>
     );
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full">
       <CardContent className="p-6">
-        {tasks.length === 0 ? (
-          <div className="text-center text-gray-500 py-8">
-            <p>No tasks yet. Create your first task!</p>
+        <div className="mb-6 space-y-4">
+          <div className="flex items-center space-x-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-black-500 dark:text-white-500" />
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-black-100/5 dark:bg-white-500/5 rounded-xl border-0 focus:ring-2 ring-violet-300/20"
+              />
+            </div>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="px-4 py-2 bg-black-100/5 dark:bg-white-500/5 rounded-xl border-0 focus:ring-2 ring-violet-300/20"
+            >
+              <option value="all">All Tasks</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </select>
           </div>
+        </div>
+
+        {filteredTasks.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-8"
+          >
+            <p className="text-black-500 dark:text-white-500">
+              {searchQuery ? 'No tasks found matching your search' : 'No tasks yet. Create your first task!'}
+            </p>
+          </motion.div>
         ) : (
-          <div className="space-y-4">
-            {tasks.map(task => (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-4"
+          >
+            {filteredTasks.map(task => (
               <TaskItem
                 key={task.id}
                 task={task}
@@ -86,7 +157,7 @@ export default function TaskList() {
                 onStatusChange={handleStatusChange}
               />
             ))}
-          </div>
+          </motion.div>
         )}
       </CardContent>
     </Card>
