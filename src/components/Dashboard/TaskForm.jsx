@@ -4,9 +4,13 @@ import { Button, Input, Textarea } from '@/components/ui';
 import { Calendar, Clock, Tag, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 export default function TaskForm() {
   const router = useRouter();
+
+  const [isCreating, setIsCreating] = useState(false);
+
   const [task, setTask] = useState({ 
     title: '', 
     description: '',
@@ -16,21 +20,28 @@ export default function TaskForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsCreating(true);
+  
     try {
       const response = await fetch('/api/tasks/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(task)
       });
-      
+        
       if (response.ok) {
         toast.success('Task created successfully');
         router.push('/dashboard');
+      } else {
+        toast.error('Failed to create task');
       }
     } catch (error) {
-      toast.error('Failed to create task');
+      toast.error('An error occurred');
+    } finally {
+      setIsCreating(false);
     }
   };
+  
 
   return (
     <motion.form 
@@ -88,12 +99,16 @@ export default function TaskForm() {
         </div>
       </div>
 
-      <Button 
-        type="submit"
-        className="w-full bg-light-accent shadow-sm text-neutral-900 hover:bg-violet-300/90 dark:bg-dark-accent dark:hover:bg-dark-accent/90 hover:text-white dark:text-black-200 rounded-xl py-3"
-      >
-        Create Task
-      </Button>
+      <div className="flex justify-center">
+  <Button
+    type="submit"
+    className="bg-light-accent text-neutral-900 hover:bg-violet-300/90 dark:bg-dark-accent dark:hover:bg-dark-accent/90 hover:text-white dark:text-black-200"
+    disabled={isCreating}
+  >
+    {isCreating && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+    {isCreating ? 'Creating Task...' : 'Create Task'}
+  </Button>
+</div>
     </motion.form>
   );
 }

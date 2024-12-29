@@ -2,6 +2,14 @@ import prisma from '../../../utils/prisma';
 import jwt from 'jsonwebtoken';
 import { hash } from 'bcryptjs';
 
+const validatePassword = (password) => {
+  return password.length >= 8 && 
+         /[A-Z]/.test(password) && 
+         /[a-z]/.test(password) && 
+         /[0-9]/.test(password) &&
+         /[!@#$%^&*(),.?":{}|<>]/.test(password);
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -9,9 +17,14 @@ export default async function handler(req, res) {
 
   const { token, newPassword } = req.body;
 
+  if (!validatePassword(newPassword)) {
+    return res.status(400).json({ 
+      message: 'Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters'
+    });
+  }
+
   try {
     const { userId } = jwt.verify(token, process.env.NEXTAUTH_SECRET);
-
     const hashedPassword = await hash(newPassword, 12);
 
     await prisma.user.update({

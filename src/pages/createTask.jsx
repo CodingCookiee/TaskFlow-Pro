@@ -7,6 +7,8 @@ import { motion } from 'framer-motion';
 
 export default function CreateTask() {
   const router = useRouter();
+  
+
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {

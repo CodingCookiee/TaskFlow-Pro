@@ -24,6 +24,7 @@ export default function EditTask() {
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  
   const { id } = router.query;
 
   useEffect(() => {

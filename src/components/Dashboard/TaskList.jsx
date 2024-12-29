@@ -37,7 +37,10 @@ export default function TaskList() {
   const filterTasks = () => {
     let result = [...tasks];
   
-    // Enhanced search filter
+    // Sort tasks by updatedAt date (most recent first)
+    result.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  
+    // Apply search filter
     if (searchQuery.trim()) {
       result = result.filter(task => 
         task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -45,6 +48,7 @@ export default function TaskList() {
       );
     }
   
+    // Apply status filter
     switch (filter) {
       case 'active':
         result = result.filter(task => !task.completed);
@@ -58,6 +62,7 @@ export default function TaskList() {
   
     setFilteredTasks(result);
   };
+  
   
 
   const handleDelete = async (taskId) => {
