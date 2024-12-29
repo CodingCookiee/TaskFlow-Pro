@@ -78,16 +78,26 @@ export default function SignIn() {
               />
             </div>
 
-            <div className="relative">
-              <Lock className="absolute left-3 top-3.5 h-5 w-5 text-black-500 dark:text-white-500" />
-              <Input
-                type="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="pl-10 w-full bg-black-100/5 dark:bg-white-500/5 border-0 focus:ring-2 ring-black-300/20 dark:ring-white-500/20"
-                required
-              />
+            <div className="space-y-2">
+              <div className="relative">
+                <Lock className="absolute left-3 top-3.5 h-5 w-5 text-black-500 dark:text-white-500" />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="pl-10 w-full bg-black-100/5 dark:bg-white-500/5 border-0 focus:ring-2 ring-black-300/20 dark:ring-white-500/20"
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <Link 
+                  href="/auth/forgot-password"
+                  className="text-sm text-black-300 dark:text-white-700 hover:text-violet-300 dark:hover:text-violet-300 transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             <Button 

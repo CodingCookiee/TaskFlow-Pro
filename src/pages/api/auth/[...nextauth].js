@@ -4,6 +4,20 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
 
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePassword = (password) => {
+  return password.length >= 8 && 
+         /[A-Z]/.test(password) && 
+         /[a-z]/.test(password) && 
+         /[0-9]/.test(password) &&
+         /[!@#$%^&*(),.?":{}|<>]/.test(password); 
+};
+
+
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -18,7 +32,15 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password required');
+          throw new Error('Email and password are required');
+        }
+
+        if (!validateEmail(credentials.email)) {
+          throw new Error('Invalid email format');
+        }
+
+        if (!validatePassword(credentials.password)) {
+          throw new Error('Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters');
         }
 
         const user = await prisma.user.findUnique({
@@ -65,7 +87,7 @@ export const authOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60 // 30 days
+    maxAge: 30 * 24 * 60 * 60
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development'

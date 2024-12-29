@@ -1,30 +1,79 @@
-// Move the signup.js file from /api/routes/ to /api/auth/
-// Update the file path to: src/pages/api/auth/signup.js
-
 import { hash } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
-import jwt from 'jsonwebtoken';
+
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePassword = (password) => {
+  return password.length >= 8 && 
+         /[A-Z]/.test(password) && 
+         /[a-z]/.test(password) && 
+         /[0-9]/.test(password) &&
+         /[!@#$%^&*(),.?":{}|<>]/.test(password);
+};
+
+const validateName = (name) => {
+  return name.length >= 2 && name.length <= 15 && /^[a-zA-Z\s]*$/.test(name);
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    return res.status(405).json({ 
+      success: false,
+      message: 'Method not allowed' 
+    });
   }
 
   const { name, email, password } = req.body;
 
+  // Check for missing fields
   if (!email || !password || !name) {
-    return res.status(400).json({ message: 'All fields are required' });
+    return res.status(400).json({ 
+      success: false,
+      message: 'All fields are required' 
+    });
+  }
+
+  // Validate name
+  if (!validateName(name)) {
+    return res.status(400).json({ 
+      success: false,
+      message: 'Name must be between 2 and 15 characters and contain only letters' 
+    });
+  }
+
+  // Validate email
+  if (!validateEmail(email)) {
+    return res.status(400).json({ 
+      success: false,
+      message: 'Please enter a valid email address' 
+    });
+  }
+
+  // Validate password
+  if (!validatePassword(password)) {
+    return res.status(400).json({ 
+      success: false,
+      message: 'Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters' 
+    });
   }
 
   try {
+    // Check for existing user
     const existingUser = await prisma.user.findUnique({
       where: { email }
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already registered' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email already registered' 
+      });
     }
 
+    // Hash password and create user
     const hashedPassword = await hash(password, 12);
     
     const user = await prisma.user.create({
@@ -33,26 +82,27 @@ export default async function handler(req, res) {
         email,
         password: hashedPassword,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        createdAt: true
+      }
     });
-
-    const token = jwt.sign(
-      { 
-        userId: user.id, 
-        email: user.email,
-        name: user.name
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    const { password: _, ...userWithoutPassword } = user;
 
     return res.status(201).json({
-      user: userWithoutPassword,
-      token
+      success: true,
+      message: 'Account created successfully',
+      user
     });
+
   } catch (error) {
     console.error('Signup error:', error);
-    return res.status(500).json({ message: 'Error creating user' });
+    return res.status(500).json({ 
+      success: false,
+      message: 'Error creating account',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }

@@ -6,6 +6,7 @@ import { Chrome, ArrowRight, Mail, Lock, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
+
 export default function SignUp() {
   const [formData, setFormData] = useState({
     name: '',
@@ -17,16 +18,18 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+  
 
+  
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         toast.success('Account created successfully!');
         signIn('credentials', {
@@ -43,6 +46,7 @@ export default function SignUp() {
       setIsLoading(false);
     }
   };
+  
 
   const handleGoogleSignUp = () => {
     signIn('google', { callbackUrl: '/dashboard' });
