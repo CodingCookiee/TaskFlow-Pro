@@ -35,7 +35,8 @@ export default async function handler(req, res) {
         data: {
           title: req.body.title,
           description: req.body.description,
-          completed: req.body.completed
+          dueDate: req.body.dueDate ? new Date(req.body.dueDate) : null,
+          priority: req.body.priority
         }
       });
       return res.json(updatedTask);
@@ -55,7 +56,9 @@ export default async function handler(req, res) {
           id: taskId,
           userId: session.user.id
         },
-        data: req.body
+        data: {
+          completed: req.body.completed
+        }
       });
       return res.json(patchedTask);
 

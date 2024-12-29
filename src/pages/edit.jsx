@@ -36,13 +36,19 @@ export default function EditTask() {
     try {
       const response = await fetch(`/api/tasks/${id}`);
       const data = await response.json();
-      setTask(data);
+      setTask({
+        title: data.title,
+        description: data.description,
+        dueDate: data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : '',
+        priority: data.priority || 'medium'
+      });
     } catch (error) {
       toast.error('Failed to fetch task');
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
