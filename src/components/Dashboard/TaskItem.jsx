@@ -3,17 +3,25 @@ import { useRouter } from 'next/router';
 import { Card, CardContent, Checkbox } from '@/components/ui';
 import { Pencil, Trash2, Calendar, AlertCircle, MoreVertical } from "lucide-react";
 import { motion } from 'framer-motion';
+import { Loader2 } from "lucide-react";
 
 export default function TaskItem({ task, onDelete, onStatusChange }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
     await onDelete(task.id);
     setIsDeleting(false);
     setDropdownOpen(false);
+  };
+
+  const handleStatusChange = async (e) => {
+    setIsUpdating(true);
+    await onStatusChange(task.id, e.target.checked);
+    setIsUpdating(false);
   };
 
   return (
@@ -28,11 +36,23 @@ export default function TaskItem({ task, onDelete, onStatusChange }) {
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-4 flex-1">
-              <Checkbox
-                checked={task.completed}
-                onChange={(e) => onStatusChange(task.id, e.target.checked)}
-                className="mt-1.5"
-              />
+            <div className="relative">
+                {isUpdating ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="h-5 w-5"
+                  >
+                    <Loader2 className="h-5 w-5 text-violet-300" />
+                  </motion.div>
+                ) : (
+                  <Checkbox
+                    checked={task.completed}
+                    onChange={handleStatusChange}
+                    className="mt-1.5"
+                  />
+                )}
+              </div>
               <div className="space-y-1 flex-1">
                 <h3 className={`font-medium text-black-300 dark:text-white-700 ${
                   task.completed ? 'line-through text-black-500 dark:text-white-500' : ''
