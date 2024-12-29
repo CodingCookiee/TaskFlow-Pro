@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const { token, newPassword } = req.body;
 
   try {
-    const { userId } = jwt.verify(token, process.env.RESET_PASSWORD_SECRET);
+    const { userId } = jwt.verify(token, process.env.NEXTAUTH_SECRET);
 
     const hashedPassword = await hash(newPassword, 12);
 
