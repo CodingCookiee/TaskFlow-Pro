@@ -59,28 +59,28 @@ npm run dev
 Create .env file:
 
 1. Database
-DATABASE_URL="postgresql://username:password@localhost:5432/taskflow"
+- DATABASE_URL="postgresql://username:password@localhost:5432/taskflow"
 
 2. Authentication
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret-key
-JWT_SECRET=your-jwt-secret
+- NEXTAUTH_URL=http://localhost:3000
+- NEXTAUTH_SECRET=your-secret-key
+- JWT_SECRET=your-jwt-secret
 
 3. OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+- GOOGLE_CLIENT_ID=your-google-client-id
+- GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 4. Cloudinary
-CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
-CLOUDINARY_API_KEY=your-cloudinary-api-key
-CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+- CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+- CLOUDINARY_API_KEY=your-cloudinary-api-key
+- CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 
 5. Email
-EMAIL_FROM=your-email-from
-EMAIL_HOST=your-email-host
-EMAIL_PORT=your-email-port
-EMAIL_USER=your-email-user
-EMAIL_PASSWORD=your-email-password
+- EMAIL_FROM=your-email-from
+- EMAIL_HOST=your-email-host
+- EMAIL_PORT=your-email-port
+- EMAIL_USER=your-email-user
+- EMAIL_PASSWORD=your-email-password
 
 
 
