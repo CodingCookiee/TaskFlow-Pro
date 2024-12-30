@@ -38,7 +38,7 @@
 ## 🚀 Installation
 
 1. Clone and Install:
-git clone https://github.com/CodingCookie/taskflow-pro.git
+git clone https://github.com/CodingCookiee/TaskFlow-Pro.git
 cd taskflow-pro
 npm install
 
