@@ -18,7 +18,8 @@ export default async function handler(req, res) {
         where: {
           id: taskId,
           userId: session.user.id
-        }
+        },
+        cacheStrategy: { ttl: 60 } 
       });
       
       if (!task) {

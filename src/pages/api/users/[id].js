@@ -32,7 +32,8 @@ export default async function handler(req, res) {
             email: true,
             name: true,
             image: true
-          }
+          },
+          cacheStrategy: { ttl: 60 }
         });
         return res.status(200).json(user);
 

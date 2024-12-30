@@ -21,7 +21,8 @@ export default async function handler(req, res) {
   try {
     const user = await prisma.user.findUnique({ 
       where: { email },
-      select: { id: true, email: true }
+      select: { id: true, email: true },
+      cacheStrategy: { ttl: 60 } 
     });
 
     if (!user) {

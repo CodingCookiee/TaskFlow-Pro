@@ -63,7 +63,8 @@ export default async function handler(req, res) {
   try {
     // Check for existing user
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
+      cacheStrategy: { ttl: 60 } 
     });
 
     if (existingUser) {

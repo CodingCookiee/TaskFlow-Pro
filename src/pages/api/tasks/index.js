@@ -17,7 +17,8 @@ export default async function handler(req, res) {
         },
         orderBy: {
           createdAt: 'desc'
-        }
+        },
+        cacheStrategy: { ttl: 60 } 
       });
       return res.json(tasks);
 
