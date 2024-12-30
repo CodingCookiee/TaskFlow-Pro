@@ -6,7 +6,7 @@ import { User, Mail, Camera, Trash2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
-export default function AccountSettings() {
+export default function Settings() {
   const { data: session, update } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -193,3 +193,4 @@ export default function AccountSettings() {
     </>
   );
 }
+
