@@ -1,89 +1,85 @@
 # TaskFlow Pro - Modern Task Management
 
-## Overview
-TaskFlow Pro is a sophisticated task management solution built with Next.js and PostgreSQL. It delivers a premium user experience with server-side rendering, real-time updates, and a sleek interface.
+## 📋 Table of Contents
+1. 🔗 [Live Demo](#live-demo)
+2. 📱 [Features](#features)
+3. ⚙️ [Tech Stack](#tech-stack)
+4. 🚀 [Installation](#installation)
+5. 🛠️ [Environment Setup](#environment-setup)
+6. 📊 [Performance](#performance)
+7. 🔒 [Security](#security)
+8. 🧪 [Testing](#testing)
 
-## Key Features
-✨ **Smart Authentication**
-- Secure email/password login
-- Google OAuth integration
-- JWT token security
+## 🔗 Live Demo
+[TaskFlow Pro Demo](https://taskflow-pro.vercel.app)
 
-🚀 **Powerful Task Management**
-- Intuitive task creation and editing
-- Real-time status updates
-- Priority levels
-- Collaborative features
+![App Screenshot](./public/app.png)
 
-💎 **Premium Design**
-- Modern, responsive interface
-- Clean animations
-- Mobile-first approach
-- Dark/Light mode support
 
-🛡️ **Enterprise Security**
-- Protected API routes
-- Data encryption
-- Session management
-- Role-based access
+## 📱 Features
+- Task Management with Real-time Updates
+- Smart Authentication System
+- Priority Levels & Categories
+- Light Weight
+- Responsive and Minimalistic UI
 
-## Tech Architecture
-- **Frontend**: Next.js 13+
-- **Styling**: TailwindCSS
-- **Backend**: Node.js with Next.js API routes
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js
-- **Icons**: Lucide React
+## ⚙️ Tech Stack
+- Next.js 15
+- TailwindCSS
+- React
+- PostgreSQL
+- Prisma ORM
+- NextAuth.js
+- Google OAuth
+- Cloudinary
+- Lucide React
+- Framer Motion
+  
 
-## Quick Setup
-1. Clone and install:
+## 🚀 Installation
+
+1. Clone and Install:
 ```bash
 git clone https://github.com/yourusername/taskflow-pro.git
 cd taskflow-pro
 npm install
 
+2. Database Setup:
+npx prisma migrate dev --name init
+npx prisma generate
 
-3. Set up environment variables:
-   - DATABASE_URL=
-- NEXTAUTH_URL=http://localhost:3000
-- NEXTAUTH_SECRET=
-- JWT_SECRET=
-- GOOGLE_CLIENT_ID=
-- GOOGLE_CLIENT_SECRET=
+3. Start Development:
+npm run dev
 
 
-4. Set up the database:
-   - Ensure PostgreSQL is running and create a database.
-   - Run Prisma migrations:
-   ```
-   npx prisma migrate dev --name init
-   ```
+4. 🛠️ Environment Setup
+Create .env file:
 
-5. Start the development server:
-   ```
-   npm run dev
-   ```
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/taskflow"
 
-6. Open your browser and navigate to `http://localhost:3000`.
+# Authentication
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+JWT_SECRET=your-jwt-secret
 
-## Testing
-- Run tests using Jest:
-  ```
-  npm run test
-  ```
+# OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 
-## Screenshots
-- Include screenshots of the following pages:
-  - Home
-  - Sign In
-  - Register
-  - Dashboard
-  - Edit Page
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 
-## Database Dump
-- Include a dump of the PostgreSQL database used for testing.
+# Email
+EMAIL_FROM=your-email-from
+EMAIL_HOST=your-email-host
+EMAIL_PORT=your-email-port
+EMAIL_USER=your-email-user
+EMAIL_PASSWORD=your-email-password
 
-## Code Execution Time Complexity
-- Task Addition: O(1)
-- Task Deletion: O(n) (in the worst case, if searching for the task)
-- Task Update: O(n) (if searching for the task to update)
+
+
+
+

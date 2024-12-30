@@ -5,11 +5,11 @@
  "type": "module",
  "scripts": {
   "dev": "cross-env NODE_OPTIONS='--max-old-space-size=4096' next dev --turbopack",
-  "build": "prisma generate && cross-env NODE_OPTIONS='--max-old-space-size=4096' next build",
+  "build": "prisma generate --no-engine && cross-env NODE_OPTIONS='--max-old-space-size=4096' next build",
   "start": "cross-env NODE_OPTIONS='--max-old-space-size=4096' next start",
   "analyze": "cross-env ANALYZE=true npm run build",
   "test": "jest",
-  "postinstall": "prisma generate",
+  "postinstall": "prisma generate --no-engine",
   "prisma:migrate:dev": "prisma migrate dev",
   "prisma:migrate:prod": "prisma migrate deploy",
   "prisma:studio": "prisma studio"

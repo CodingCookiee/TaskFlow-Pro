@@ -33,7 +33,7 @@ export default async function handler(req, res) {
             name: true,
             image: true
           },
-          cacheStrategy: { ttl: 60 }
+        
         });
         return res.status(200).json(user);
 
