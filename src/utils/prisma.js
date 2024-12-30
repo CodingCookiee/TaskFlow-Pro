@@ -1,15 +1,16 @@
-import { PrismaClient } from '@prisma/client';
-import { withAccelerate } from '@prisma/extension-accelerate';
+import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
-let prisma;
+const prisma = new PrismaClient({
+  log: ['query', 'error', 'warn']
+}).$extends(withAccelerate())
 
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient().$extends(withAccelerate());
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient().$extends(withAccelerate());
+// Export config for API route
+export const config = {
+  api: {
+    bodyParser: true,
+    externalResolver: true
   }
-  prisma = global.prisma;
 }
 
-export default prisma;
+export default prisma

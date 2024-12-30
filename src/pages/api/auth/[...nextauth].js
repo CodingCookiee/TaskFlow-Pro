@@ -1,9 +1,10 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth from 'next-auth'
+import Google from 'next-auth/providers/google'
+import Credentials from 'next-auth/providers/credentials'
 import { compare } from 'bcryptjs';
-import prisma from '../../../utils/prisma';
 import jwt from 'jsonwebtoken';
+import prisma from '../../../utils/prisma';
+
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,11 +21,11 @@ const validatePassword = (password) => {
 
 export const authOptions = {
   providers: [
-    GoogleProvider({
+    Google.default({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    CredentialsProvider({
+    Credentials.default({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
@@ -138,4 +139,5 @@ export const authOptions = {
   debug: process.env.NODE_ENV === 'development'
 };
 
-export default NextAuth(authOptions);
+export default NextAuth.default(authOptions)
+
