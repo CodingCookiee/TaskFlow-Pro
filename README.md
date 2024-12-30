@@ -3,32 +3,31 @@
 ## 📋 Table of Contents
 ## 📋 Table of Contents
 
-1. 🔗 [Live Demo](#-live-demo)
+1. 🔗 [Live Demo](#livedemo)
 
-2. 📱 [Features](#-features)
+2. 📱 [Features](#features)
 
-3. ⚙️ [Tech Stack](#️-tech-stack)
+3. ⚙️ [Tech Stack](#tech-stack)
 
-4. 🚀 [Installation](#-installation)
+4. 🚀 [Installation](#installation)
 
-5. 🛠️ [Environment Setup](#️-environment-setup)
-
-
+5. 🛠️ [Environment Setup](#env)
 
 
-## [🔗LiveDemo](https://razaawan.up.railway.app/)
 
+
+## <a name='livedemo'>[🔗LiveDemo](https://razaawan.up.railway.app/) </a>
 ![App Screenshot](./public/app.png)
 
 
-## 📱 Features
+##  <a name="features"> 📱 Features</a>
 - Task Management with Real-time Updates
 - Smart Authentication System
 - Priority Levels & Categories
 - Light Weight
 - Responsive and Minimalistic UI
 
-## ⚙️ Tech Stack
+## <a name="tech-stack">⚙️ Tech Stack</a>
 - Next.js 15
 - TailwindCSS
 - React
@@ -41,7 +40,7 @@
 - Framer Motion
   
 
-## 🚀 Installation
+## <a name="installation"> 🚀 Installation</a>
 
 1. Clone and Install:
 git clone https://github.com/CodingCookiee/TaskFlow-Pro.git
@@ -56,7 +55,7 @@ npx prisma generate
 npm run dev
 
 
-## 🛠️ Environment Setup
+## <a name="env">🛠️ Environment Setup</a>
 Create .env file:
 
 1. Database
