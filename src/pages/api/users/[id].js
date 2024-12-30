@@ -33,23 +33,23 @@ export default async function handler(req, res) {
             name: true,
             image: true
           },
-        
-        });
-        return res.status(200).json(user);
+          cacheStrategy: { ttl: 60 }
+        })
+        return res.status(200).json(user)
 
-        case 'PUT':
-          const form = formidable({
-            maxFileSize: 5 * 1024 * 1024,
-            keepExtensions: true,
-            filter: file => file.mimetype?.includes('image/')
-          });
+      case 'PUT':
+        const form = formidable({
+          maxFileSize: 5 * 1024 * 1024,
+          keepExtensions: true,
+          filter: file => file.mimetype?.includes('image/')
+        })
         
-          const [fields, files] = await new Promise((resolve, reject) => {
-            form.parse(req, (err, fields, files) => {
-              if (err) reject(err);
-              resolve([fields, files]);
-            });
-          });
+        const [fields, files] = await new Promise((resolve, reject) => {
+          form.parse(req, (err, fields, files) => {
+            if (err) reject(err)
+            resolve([fields, files])
+          })
+        })
         
           const updateData = {};
           
@@ -60,12 +60,15 @@ export default async function handler(req, res) {
           
           if (fields.email) {
             // Check if email is already taken
-            const existingUser = await prisma.user.findUnique({
-              where: { 
-                email: fields.email.toString(),
-                NOT: { id: userId }
-              }
-            });
+            const [existingUser] = await Promise.all([
+              prisma.user.findUnique({
+                where: { 
+                  email: fields.email.toString(),
+                  NOT: { id: userId }
+                },
+                cacheStrategy: { ttl: 60 }
+              })
+            ])
         
             if (existingUser) {
               return res.status(400).json({ message: 'Email already in use' });
@@ -74,28 +77,28 @@ export default async function handler(req, res) {
             updateData.email = fields.email.toString();
           }
           // Handle image update
-        if (files?.image) {
-          const currentUser = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { image: true }
-          });
+          // In the PUT method handler, update the image upload section:
 
-          // Delete old image if it exists and isn't a Google profile picture
-          if (currentUser?.image && !currentUser.image.includes('googleusercontent.com')) {
-            const publicId = getPublicIdFromUrl(currentUser.image);
-            if (publicId) {
-              await deleteImage(publicId);
-            }
-          }
+if (files?.image) {
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { image: true },
+    cacheStrategy: { ttl: 60 }
+  })
 
-          const uploadResult = await uploadImage(files.image);
-          updateData.image = uploadResult.url;
+  if (currentUser?.image && !currentUser.image.includes('googleusercontent.com')) {
+    await deleteImage(getPublicIdFromUrl(currentUser.image))
+  }
 
-          // Clean up temporary file
-          if (fs.existsSync(files.image[0].filepath)) {
-            fs.unlinkSync(files.image[0].filepath);
-          }
-        }
+  // Single uploadResult declaration
+  const imageResult = await uploadImage(files.image)
+  updateData.image = imageResult.url
+
+  if (fs.existsSync(files.image[0].filepath)) {
+    fs.unlinkSync(files.image[0].filepath)
+  }
+}
+
           
           // Handle image update logic...
         

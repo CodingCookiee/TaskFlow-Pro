@@ -4,20 +4,20 @@
  "private": true,
  "type": "module",
  "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--max-old-space-size=4096' next dev",
-    "build": "prisma generate --no-engine && next build",
+  "dev": "cross-env NODE_OPTIONS='--max-old-space-size=4096' next dev",
+  "build": "prisma generate --no-engine && next build",
   "start": "next start",
-    "lint": "next lint",
-    "format": "prettier --write .",
-    "clean": "rimraf .next",
-    "type-check": "tsc --noEmit",
-    "analyze": "cross-env ANALYZE=true npm run build",
-    "test": "jest",
-    "seed": "node prisma/seed.js",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:migrate:prod": "prisma migrate deploy",
-    "prisma:studio": "prisma studio"
-   },
+  "lint": "next lint",
+  "format": "prettier --write .",
+  "clean": "rimraf .next",
+  "type-check": "tsc --noEmit",
+  "analyze": "cross-env ANALYZE=true npm run build",
+  "test": "jest",
+  "seed": "node prisma/seed.js",
+  "prisma:migrate:dev": "prisma migrate dev",
+  "prisma:migrate:prod": "prisma migrate deploy",
+  "prisma:studio": "prisma studio"
+ },
  "prisma": {
   "seed": "node prisma/seed.js"
  },
@@ -61,6 +61,7 @@
   "@shadcn/ui": "^0.0.4",
   "@types/jest": "^29.5.14",
   "@types/react": "^19.0.2",
-  "jest": "^29.7.0"
+  "jest": "^29.7.0",
+  "rimraf": "^6.0.1"
  }
 }
