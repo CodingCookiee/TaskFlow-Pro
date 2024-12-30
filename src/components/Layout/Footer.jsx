@@ -36,7 +36,7 @@ export default function Footer() {
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 lg:ml-28 ">
             <Link 
               href="https://github.com/CodingCookiee" 
               target="_blank"
