@@ -1,8 +1,9 @@
+
 export * from './Button'
 export * from './Card'
-export * from './Checkbox.jsx'
+export * from './Checkbox' 
 export * from './Input'
 export * from './Tabs'
 export * from './Textarea'
-export * from './DropdownMenu.jsx'
+export * from './DropdownMenu' 
 export * from './Dialog'
