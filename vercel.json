@@ -11,5 +11,29 @@
       "source": "/api/:path*",
       "destination": "/api/:path*"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "cookie",
+          "key": "session"
+        }
+      ],
+      "destination": "/dashboard",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard",
+      "missing": [
+        {
+          "type": "cookie",
+          "key": "session"
+        }
+      ],
+      "destination": "/auth/signin",
+      "permanent": false
+    }
   ]
 }
