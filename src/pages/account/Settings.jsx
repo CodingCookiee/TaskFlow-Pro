@@ -28,22 +28,22 @@ export default function AccountSettings() {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    const userId = parseInt(session.user.id);
-
-    const formData = new FormData();
-    formData.append('name', userData.name);
-    formData.append('email', userData.email);
-    if (selectedFile) {
-      formData.append('image', selectedFile);
-    }
-
+  
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const formData = new FormData();
+      formData.append('name', userData.name);
+      formData.append('email', userData.email);
+      if (selectedFile) {
+        formData.append('image', selectedFile);
+      }
+  
+      const response = await fetch(`/api/users/${session.user.id}`, {
         method: 'PUT',
         body: formData,
       });
-
+  
+      const data = await response.json();
+  
       if (response.ok) {
         await update(userData);
         toast.success('Profile updated successfully');
@@ -54,7 +54,7 @@ export default function AccountSettings() {
         });
         signOut({ callbackUrl: '/auth/signin' });
       } else {
-        toast.error('Failed to update profile');
+        toast.error(data.message || 'Failed to update profile');
       }
     } catch (error) {
       toast.error('An error occurred');
@@ -62,6 +62,7 @@ export default function AccountSettings() {
       setIsLoading(false);
     }
   };
+  
 
   const handleDeleteAccount = async () => {
     setIsLoading(true);

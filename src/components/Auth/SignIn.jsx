@@ -3,7 +3,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Button, Input, Card } from '@/components/ui';
-import { Chrome, ArrowRight, Mail, Lock } from 'lucide-react';
+import { Chrome, ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -14,6 +14,7 @@ export default function SignIn() {
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,13 +83,24 @@ export default function SignIn() {
               <div className="relative">
                 <Lock className="absolute left-3 top-3.5 h-5 w-5 text-black-500 dark:text-white-500" />
                 <Input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
                   className="pl-10 w-full bg-black-100/5 dark:bg-white-500/5 border-0 focus:ring-2 ring-black-300/20 dark:ring-white-500/20"
                   required
                 />
+                 <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 top-3.5 text-black-500 dark:text-white-500 hover:text-violet-300 dark:hover:text-violet-300 transition-colors"
+  >
+    {showPassword ? (
+      <EyeOff className="h-5 w-5" />
+    ) : (
+      <Eye className="h-5 w-5" />
+    )}
+  </button>
               </div>
               <div className="flex justify-end">
                 <Link 

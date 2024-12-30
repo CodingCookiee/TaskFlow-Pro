@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Card, CardContent, CardHeader, Button, Input } from '@/components/ui';
-import { Lock } from 'lucide-react';
+import { Lock ,Eye, EyeOff} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -11,6 +11,8 @@ export default function ResetPassword() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,24 +66,46 @@ export default function ResetPassword() {
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-5 w-5 text-black-500 dark:text-white-500" />
               <Input
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 placeholder="New password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="pl-10 w-full bg-black-100/5 dark:bg-white-500/5"
                 required
               />
+               <button
+    type="button"
+    onClick={() => setShowNewPassword(!showNewPassword)}
+    className="absolute right-3 top-3.5 text-black-500 dark:text-white-500 hover:text-violet-300 dark:hover:text-violet-300 transition-colors"
+  >
+    {showNewPassword ? (
+      <EyeOff className="h-5 w-5" />
+    ) : (
+      <Eye className="h-5 w-5" />
+    )}
+  </button>
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-5 w-5 text-black-500 dark:text-white-500" />
               <Input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="pl-10 w-full bg-black-100/5 dark:bg-white-500/5"
                 required
               />
+               <button
+    type="button"
+    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+    className="absolute right-3 top-3.5 text-black-500 dark:text-white-500 hover:text-violet-300 dark:hover:text-violet-300 transition-colors"
+  >
+    {showConfirmPassword ? (
+      <EyeOff className="h-5 w-5" />
+    ) : (
+      <Eye className="h-5 w-5" />
+    )}
+  </button>
             </div>
 
             <Button 

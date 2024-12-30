@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import prisma from '../../../utils/prisma';
+import jwt from 'jsonwebtoken';
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,7 +17,6 @@ const validatePassword = (password) => {
          /[0-9]/.test(password) &&
          /[!@#$%^&*(),.?":{}|<>]/.test(password); 
 };
-
 
 export const authOptions = {
   providers: [
@@ -61,33 +61,78 @@ export const authOptions = {
     })
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account.provider === 'google') {
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: profile.email }
+          });
+
+          if (!existingUser) {
+            const newUser = await prisma.user.create({
+              data: {
+                email: profile.email,
+                name: profile.name,
+                image: profile.picture
+              }
+            });
+            return true;
+          }
+          
+          await prisma.user.update({
+            where: { email: profile.email },
+            data: {
+              name: profile.name,
+              image: profile.picture
+            }
+          });
+          return true;
+        } catch (error) {
+          console.error('SignIn Error:', error);
+          return false;
+        }
+      }
+      return true;
+    },
     async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.image = user.image;
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            image: true
+          }
+        });
+
+        token.id = dbUser.id;
+        token.accessToken = jwt.sign(
+          { 
+            userId: dbUser.id, 
+            email: dbUser.email 
+          },
+          process.env.NEXTAUTH_SECRET,
+          { expiresIn: '24h' }
+        );
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
-        session.user.email = token.email;
-        session.user.name = token.name;
-        session.user.image = token.image;
+        session.accessToken = token.accessToken;
       }
       return session;
     }
   },
   pages: {
     signIn: '/auth/signin',
-    error: '/auth/error',
-    newUser: '/auth/signup'
+    error: '/auth/error'
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60
+    maxAge: 24 * 60 * 60
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development'

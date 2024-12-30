@@ -33,7 +33,7 @@ export const uploadImage = async (file) => {
 };
 
 export const deleteImage = async (publicId) => {
-  if (!publicId) return;
+  if (!publicId || publicId.includes('googleusercontent.com')) return;
   
   try {
     await cloudinary.uploader.destroy(publicId);
