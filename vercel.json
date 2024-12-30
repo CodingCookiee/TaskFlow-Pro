@@ -10,6 +10,10 @@
     {
       "source": "/api/:path*",
       "destination": "/api/:path*"
+    },
+    {
+      "source": "/account/settings",
+      "destination": "/account/settings"
     }
   ],
   "redirects": [
@@ -25,7 +29,7 @@
       "permanent": false
     },
     {
-      "source": "/dashboard",
+      "source": "/account/settings",
       "missing": [
         {
           "type": "cookie",
