@@ -23,7 +23,7 @@
 - Task Management with Real-time Updates
 - Smart Authentication System
 - Priority Levels & Categories
-- Light Weight
+- Light Weight and Fast
 - Responsive and Minimalistic UI
 
 ## <a name="tech-stack">⚙️ Tech Stack</a>
